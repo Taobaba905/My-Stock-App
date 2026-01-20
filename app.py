@@ -50,7 +50,7 @@ if st.sidebar.button("🚀 刷新全量数据"):
                 data_results.append({
                     "代码": t,
                     "当前价格": curr,
-                    "今日开盘": open_p,
+                    #"今日开盘": open_p,
                     "显示价格": f"{curr:.2f} {currency}",
                     "日内涨跌幅(%)": round(change, 2),
                     "PE": stock.info.get('forwardPE', 'N/A'),
