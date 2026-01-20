@@ -68,8 +68,10 @@ if st.sidebar.button("🚀 获取行情数据"):
         # --- 1. 热力柱状图 ---
         fig = px.bar(
             df, x="代码", y="涨跌幅", color="涨跌幅",
-            color_continuous_scale=[[0, "#FF0000"], [0.5, "#404040"], [1, "#00FF00"]],
-            range_color=[-4, 4], text_auto='.2f'
+            color_continuous_scale=[[0, "#FF0000"],      # 下跌：红色
+                                    [0.5, "#FFD700"],    # 零轴：金黄色
+                                    [1, "#00FF00"]],     # 上涨：绿色
+            range_color=[-5, 5], text_auto='.2f'
         )
         fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', coloraxis_showscale=False)
         st.plotly_chart(fig, use_container_width=True)
