@@ -3,12 +3,17 @@ import yfinance as yf
 import pandas as pd
 import plotly.express as px
 from datetime import datetime
+import pytz  # 导入时区库
 
 st.set_page_config(page_title="北美精选股看板", layout="wide")
 
-# 标题与更新时间
+# --- 时区处理：强制设为多伦多/美东时间 ---
+toronto_tz = pytz.timezone('America/Toronto')
+now_toronto = datetime.now(toronto_tz)
+time_str = now_toronto.strftime('%Y-%m-%d %H:%M:%S')
+
 st.title("📊 北美多市场实时看板")
-st.caption(f"最后更新: {datetime.now().strftime('%H:%M:%S')} | 绿涨 / 红跌 / 零轴深灰")
+st.caption(f"最后更新 (多伦多时间/EST): {time_str} | 绿涨 / 红跌 / 零轴深灰")
 
 # 侧边栏配置
 default_tickers = "AQN.TO, BCE.TO, CEMX.TO, COIN.NE, CRM.NE, CU.TO, ILLM.TO, LIF.NE, XSP.TO, VGRO.TO, UNH.NE, SHOP.TO, T.TO, MSTR.NE, NOWS.NE, AMD, AMZN, AVGO, COIN, COST, CRM, GOOG, LULU, META, MSFT, MSTR, NFLX, NOW, NVDA, PLTR, SHOP, SMCI, TSLA, UNH"
