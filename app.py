@@ -45,7 +45,7 @@ if st.sidebar.button("🚀 刷新全量数据"):
                     "价格": curr,
                     "货币": currency,
                     "显示价格": f"{curr:.2f} {currency}", # 合并显示
-                    "涨跌幅(%)": round(change, 2),
+                    "涨跌幅(%)": round(change, 4),
                     "PE": stock.info.get('forwardPE', 'N/A'),
                     "成交量": vol_str
                 })
