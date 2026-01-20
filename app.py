@@ -101,7 +101,7 @@ if st.sidebar.button("🚀 刷新全量数据"):
                     format="%.2f",
                     width="medium",
                 ),
-                "raw_vol": None
+                # "raw_vol": None
             },
             use_container_width=True,
             height=800
