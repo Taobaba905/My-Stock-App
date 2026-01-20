@@ -43,7 +43,7 @@ if st.sidebar.button("🚀 刷新全量数据"):
                 data_results.append({
                     "代码": t,
                     "价格": round(current_p, 2),
-                    "货币": currency_label,
+                    # "货币": currency_label,
                     "涨跌幅(%)": round(change, 2),
                     "成交量": vol_str,
                     "PE": round(stock.info.get('forwardPE', 'N/A') ,3)
