@@ -13,7 +13,7 @@ now_toronto = datetime.now(toronto_tz)
 time_str = now_toronto.strftime('%Y-%m-%d %H:%M:%S')
 
 st.title("📊 北美多市场实时看板")
-st.caption(f"最后更新 (多伦多时间/EST): {time_str} | 算法：(当前价 - 开盘价) / 开盘价")
+st.caption(f"最后更新 (多伦多时间/EST): {time_str}")
 
 # 侧边栏配置
 default_tickers = "AQN.TO, BCE.TO, CEMX.TO, COIN.NE, CRM.NE, CU.TO, ILLM.TO, LIF.NE, XSP.TO, VGRO.TO, UNH.NE, SHOP.TO, T.TO, MSTR.NE, NOWS.NE, AMD, AMZN, AVGO, COIN, COST, CRM, GOOG, LULU, META, MSFT, MSTR, NFLX, NOW, NVDA, PLTR, SHOP, SMCI, TSLA, UNH"
@@ -89,7 +89,7 @@ if st.sidebar.button("🚀 刷新全量数据"):
             column_config={
                 "代码": st.column_config.TextColumn("代码"),
                 "显示价格": st.column_config.TextColumn("最新价格", width="medium"),
-                "今日开盘": st.column_config.NumberColumn("今日开盘", format="%.2f"),
+                #"今日开盘": st.column_config.NumberColumn("今日开盘", format="%.2f"),
                 "日内涨跌幅(%)": st.column_config.NumberColumn("日内涨跌幅", format="%.2f%%"),
                 "PE": st.column_config.NumberColumn("PE"),
                 "成交量": st.column_config.TextColumn("成交量"),
