@@ -53,8 +53,8 @@ if st.sidebar.button("🚀 刷新全量数据"):
                     #"今日开盘": open_p,
                     "显示价格": f"{curr:.2f} {currency}",
                     "日内涨跌幅(%)": round(change, 2),
-                    "成交量": vol_str，
-                    "PE": stock.info.get('forwardPE', 'N/A')         
+                    "成交量": vol_str
+                    #"PE": stock.info.get('forwardPE', 'N/A')         
                 })
             except:
                 continue
