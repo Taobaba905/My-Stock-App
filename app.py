@@ -13,7 +13,7 @@ now_toronto = datetime.now(toronto_tz)
 time_str = now_toronto.strftime('%Y-%m-%d %H:%M:%S')
 
 st.title("📊 北美多市场实时看板")
-st.caption(f"最后更新 (东部时间 多伦多 est): {time_str}")
+st.caption(f"最后更新 多伦多东部时间 est: {time_str}")
 
 # --- 侧边栏配置 ---
 st.sidebar.header("查询配置")
