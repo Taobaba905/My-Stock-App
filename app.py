@@ -29,8 +29,7 @@ if st.sidebar.button("🚀 刷新全量数据"):
                 stock = yf.Ticker(t)
                 f = stock.fast_info
                 curr = f['last_price']
-                #prev = f['previous_close']
-                today_open = hist['Open'][0]
+                prev = f['previous_close']
                 change = ((curr - today_open) / today_open) * 100
                 
                 # --- 后缀逻辑与货币识别 ---
