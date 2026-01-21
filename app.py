@@ -55,7 +55,7 @@ if st.sidebar.button("🚀 获取并排序数据"):
                     vol = hist['Volume'].iloc[-1]                
 
                 # --- 【3. 涨跌幅计算逻辑】 ---
-                change = ((curr_price - prev_close) / prev_close * 100) if prev_close else 0
+                change = (((curr_price - prev_close) / prev_close) * 100) if prev_close else 0
                 currency = "加币" if any(s in t for s in [".TO", ".V", ".NE"]) else "美金"
                 vol_str = f"{vol/1e6:.2f}M" if vol >= 1e6 else f"{vol/1e3:.2f}K"
 
@@ -67,9 +67,9 @@ if st.sidebar.button("🚀 获取并排序数据"):
                 data_results.append({
                     "代码": t,
                     "跳转链接": chart_url,
-                    "当前最新价/当日收盘价": round(curr_price, 4),
+                    "当前最新价/当日收盘价": round(curr_price, 5),
                     "货币": currency,
-                    "涨跌幅": round(change, 4),
+                    "涨跌幅": round(change, 5),
                     "成交量": vol,  # 这里存数值以便排序
                     "成交量(显)": vol_str
                 })
@@ -107,7 +107,7 @@ if st.sidebar.button("🚀 获取并排序数据"):
 
 
         # --- 【5. 数据表格 】 ---
-        st.subheader(f"📋 详细行情 (点击代码可查看图表): {sort_col_1} > {sort_col_2} ({sort_order})")
+        st.subheader(f"📋 股票当天行情 (点击代码可查看图表): {sort_col_1} and {sort_col_2} ({sort_order})")
         
         # 涨跌幅颜色函数
         def style_change(val):
@@ -129,7 +129,7 @@ if st.sidebar.button("🚀 获取并排序数据"):
                 ),
                 "当前最新价/当日收盘价": st.column_config.NumberColumn("价格", format="%.3f"),
                 "货币": st.column_config.TextColumn("货币"),
-                "涨跌幅": st.column_config.NumberColumn("涨跌幅 (%)", format="%.3f%%"),
+                "涨跌幅": st.column_config.NumberColumn("涨跌幅 (%)", format="%.2f%%"),
                 "成交量": st.column_config.TextColumn("成交量"),
                 "代码": None, "成交量": None # 隐藏原始排序列
             },
