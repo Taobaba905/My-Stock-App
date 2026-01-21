@@ -67,9 +67,9 @@ if st.sidebar.button("🚀 获取并排序数据"):
                 data_results.append({
                     "代码": t,
                     "跳转链接": chart_url,
-                    "当前最新价/当日收盘价": round(curr_price, 3),
+                    "当前最新价/当日收盘价": round(curr_price, 4),
                     "货币": currency,
-                    "涨跌幅": round(change, 2),
+                    "涨跌幅": round(change, 4),
                     "成交量": vol,  # 这里存数值以便排序
                     "成交量(显)": vol_str
                 })
@@ -129,7 +129,7 @@ if st.sidebar.button("🚀 获取并排序数据"):
                 ),
                 "当前最新价/当日收盘价": st.column_config.NumberColumn("价格", format="%.3f"),
                 "货币": st.column_config.TextColumn("货币"),
-                "涨跌幅": st.column_config.NumberColumn("涨跌幅 (%)", format="%.2f%%"),
+                "涨跌幅": st.column_config.NumberColumn("涨跌幅 (%)", format="%.3f%%"),
                 "成交量": st.column_config.TextColumn("成交量"),
                 "代码": None, "成交量": None # 隐藏原始排序列
             },
