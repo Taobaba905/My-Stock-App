@@ -8,23 +8,32 @@ import pytz
 st.set_page_config(page_title="北美精选股监控", layout="wide")
 
 # --- 【1. 时区处理】 ---
-# 强制设为多伦多时间，确保“最后更新时间”对你有效
+# 设多伦多时间为“最后更新时间”.
 toronto_tz = pytz.timezone('America/Toronto')
 now_toronto = datetime.now(toronto_tz)
 time_str = now_toronto.strftime('%Y-%m-%d %H:%M:%S')
 
 st.title("📊 北美多市场实时看板")
-st.caption(f"最后更新 东部时间 est: {time_str}")
+st.caption(f"最后更新时间 est: {time_str}")
 
 # --- 【2. 侧边栏配置】 ---
-st.sidebar.header("查询配置")
+st.sidebar.header("🔍 查询与排序配置")
+# 日期选择
 selected_date = st.sidebar.date_input("选择查询日期:", now_toronto.date())
 is_today = selected_date == now_toronto.date()
 
+# 默认股票
 default_tickers = "AQN.TO, BCE.TO, CEMX.TO, COIN.NE, CRM.NE, CU.TO, ILLM.TO, LIF.NE, XSP.TO, VGRO.TO, UNH.NE, SHOP.TO, T.TO, MSTR.NE, NOWS.NE, AMD, AMZN, AVGO, COIN, COST, CRM, GOOG, LULU, META, MSFT, MSTR, NFLX, NOW, NVDA, PLTR, SHOP, SMCI, TSLA, UNH"
-tickers_raw = st.sidebar.text_area("监控名单:", default_tickers, height=150)
+tickers_raw = st.sidebar.text_area("股票:", default_tickers, height=120)
 
-if st.sidebar.button("🚀 获取行情数据"):
+# 多级排序设置
+st.sidebar.subheader("🔢多级排序设置")
+sort_col_1 = st.sidebar.selectbox("第一排序指标", ["涨跌幅", "货币", "成交量", "代码"], index=0)
+sort_col_2 = st.sidebar.selectbox("第二排序指标", ["代码", "涨跌幅", "成交量", "货币"], index=0)
+sort_order = st.sidebar.radio("排序方式", ["降序", "升序"], horizontal=True)
+is_ascending = True if sort_order == "升序" else False
+
+if st.sidebar.button("🚀 获取并排序数据"):
     tickers = [t.strip().upper() for t in tickers_raw.split(",") if t.strip()]
     data_results = []
     
@@ -38,12 +47,16 @@ if st.sidebar.button("🚀 获取行情数据"):
                     prev_close = f['previous_close']
                     vol = f['last_volume']
                 else:
-                    # 历史逻辑：获取指定日期的数据
-                    hist = stock.history(start=selected_date - timedelta(days=5), end=selected_date + timedelta(days=1))
-                    if len(hist) < 2: continue
-                    curr_price = hist['Close'].iloc[-1]
-                    prev_close = hist['Close'].iloc[-2]
-                    vol = hist['Volume'].iloc[-1]
+
+                # 历史逻辑：获取指定日期的数据
+                hist = stock.history(start=selected_date - timedelta(days=5), end=selected_date + timedelta(days=1))
+                if len(hist) < 2: continue
+                curr_price = hist['Close'].iloc[-1]
+                prev_close = hist['Close'].iloc[-2]
+                vol = hist['Volume'].iloc[-1]
+
+
+                
 
                 # --- 【3. 涨跌幅计算逻辑】 ---
                 change = ((curr_price - prev_close) / prev_close * 100) if prev_close else 0
@@ -54,19 +67,29 @@ if st.sidebar.button("🚀 获取行情数据"):
                 # 构建 Yahoo Finance 的跳转 URL
                 chart_url = f"https://finance.yahoo.com/quote/{t}"
 
+
                 data_results.append({
                     "代码": t,
-                    "跳转链接": chart_url,  # 隐藏列，用于支撑跳转功能
+                    "跳转链接": chart_url,
                     "当前最新价/当日收盘价": round(curr_price, 3),
                     "货币": currency,
                     "涨跌幅": round(change, 2),
-                    "成交量": vol_str
+                    "成交量": vol,  # 这里存数值以便排序
+                    "成交量(显)": vol_str
                 })
-            except:
+            except: 
                 continue
 
     if data_results:
-        df = pd.DataFrame(data_results).sort_values("涨跌幅", ascending=False)
+        # --- 核心：执行多列排序 ---
+        df = pd.DataFrame(data_results)
+        df = df.sort_values(
+            by=[sort_col_1, sort_col_2], 
+            ascending=[is_ascending, is_ascending]
+        )
+
+
+
 
         # --- 【4. 热力柱状图：零点金黄色】 ---
         st.subheader("🔥 市场表现分布")
@@ -85,8 +108,10 @@ if st.sidebar.button("🚀 获取行情数据"):
 
         st.divider()
 
-        # --- 【5. 数据表格：包含点击跳转功能】 ---
-        st.subheader("📋 详细行情 (点击代码可查看图表)")
+
+
+        # --- 【5. 数据表格 】 ---
+        st.subheader(f"📋 详细行情 (点击代码可查看图表): {sort_col_1} > {sort_col_2} ({sort_order})")
         
         # 涨跌幅颜色函数
         def style_change(val):
@@ -110,7 +135,7 @@ if st.sidebar.button("🚀 获取行情数据"):
                 "货币": st.column_config.TextColumn("货币"),
                 "涨跌幅": st.column_config.NumberColumn("涨跌幅 (%)", format="%.2f%%"),
                 "成交量": st.column_config.TextColumn("成交量"),
-                "代码": None  # 隐藏原始的代码列，因为我们已经把链接列改名为代码了
+                "代码": None, "成交量": None # 隐藏原始排序列
             },
             use_container_width=True,
             height=800,
@@ -126,3 +151,7 @@ if st.sidebar.button("🚀 获取行情数据"):
             """, unsafe_allow_html=True)
     else:
         st.error("无法抓取数据，请重试。")
+
+
+===================================================================================================================================================================
+
